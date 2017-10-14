@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+    <context id="dev">
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 基于oracle的分页插件 -->
+        <plugin type="org.mybatis.generator.plugins.PagingByOraclePlugin"></plugin>
+        <!-- JDBC -->
+        <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+                        connectionURL="jdbc:oracle:thin:@192.168.90.126:1521/jydb" userId="skill_dev"
+                        password="skill_dev"/>
+        <!-- Xxx.java -->
+        <javaModelGenerator targetPackage="com.cattsoft.skill.qz.entity"
+                            targetProject="/Users/fuxm/IdeaProjects/jyb/trunk/jyb-skill/src/main/java">
+            <property name="rootClass" value="com.cattsoft.baseplatform.core.entity.Entity"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!-- XxxMapper.xml -->
+        <sqlMapGenerator targetPackage="com.cattsoft.skill.qz.persistence"
+                         targetProject="/Users/fuxm/IdeaProjects/jyb/trunk/jyb-skill/src/main/resources"/>
+        <!-- XxxMapper.java -->
+        <javaClientGenerator targetPackage="com.cattsoft.skill.qz.persistence"
+                             targetProject="/Users/fuxm/IdeaProjects/jyb/trunk/jyb-skill/src/main/java"
+                             type="XMLMAPPER"/>
+        <!-- 同时生成多张表的，配置多个table节点 -->
+        <table schema="SKILL_DEV" tableName="QZ_GZ_XS_JBXX" enableCountByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" enableUpdateByExample="false">
+            <!-- UUID -->
+            <generatedKey column="ID" sqlStatement="SELECT SYS_GUID() FROM DUAL"/>
+        </table>
+        <table schema="SKILL_DEV" tableName="QZ_JS_JBXX" enableCountByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" enableUpdateByExample="false">
+            <!-- UUID -->
+            <generatedKey column="ID" sqlStatement="SELECT SYS_GUID() FROM DUAL"/>
+        </table>
+        <table schema="SKILL_DEV" tableName="QZ_ZZJG_XS_JBXX" enableCountByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" enableUpdateByExample="false">
+            <!-- UUID -->
+            <generatedKey column="ID" sqlStatement="SELECT SYS_GUID() FROM DUAL"/>
+        </table>
+    </context>
+</generatorConfiguration>

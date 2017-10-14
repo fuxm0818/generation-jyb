@@ -1,0 +1,120 @@
+<%@page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@taglib prefix="dt" uri="/dttag"%>
+<%@taglib prefix="s" uri="/struts-tags"%>
+<script type="text/javascript" language="JavaScript">
+	//操作
+	function handle(cellvalue, options, rowObject) {
+		var str = "";
+#if(${convert}=="yes")
+		str += "<a href='javascript:${lowerTableName}Detail(\"" + #if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1)rowObject.entity.${lowerPrimaryKey} + #else"\"," + rowObject.entity.${lowerPrimaryKey} + #end#end#end"\");'>查看</a>&nbsp;";
+		str += "<a href='javascript:${lowerTableName}Update(\"" + #if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1)rowObject.entity.${lowerPrimaryKey} + #else"\"," + rowObject.entity.${lowerPrimaryKey} + #end#end#end"\");'>修改</a>&nbsp;";
+		str += "<a href='javascript:${lowerTableName}Delete(\"" + #if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1)rowObject.entity.${lowerPrimaryKey} + #else"\"," + rowObject.entity.${lowerPrimaryKey} + #end#end#end"\");'>删除</a>&nbsp;";
+#end
+#if(${convert}=="no")
+		str += "<a href='javascript:${lowerTableName}Detail(\"" + #if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1)rowObject.${lowerPrimaryKey} + #else"\"," + rowObject.${lowerPrimaryKey} + #end#end#end"\");'>查看</a>&nbsp;";
+		str += "<a href='javascript:${lowerTableName}Update(\"" + #if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1)rowObject.${lowerPrimaryKey} + #else"\"," + rowObject.${lowerPrimaryKey} + #end#end#end"\");'>修改</a>&nbsp;";
+		str += "<a href='javascript:${lowerTableName}Delete(\"" + #if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1)rowObject.${lowerPrimaryKey} + #else"\"," + rowObject.${lowerPrimaryKey} + #end#end#end"\");'>删除</a>&nbsp;";
+#end
+		return str;
+	}
+	//查看
+	function ${lowerTableName}Detail()
+	{
+        var selrow = listGrid.dtpaginggrid("option", 'selarrrow') + "";
+        if (selrow == "") {
+            $.dtmessagebox.warn("请选择一条数据进行操作!");
+            return;
+        }
+        var arrIds = new Array();
+        arrIds = selrow.split(",");
+        if (arrIds.length > 1) {
+            $.dtmessagebox.warn("只能选择一条数据!");
+        } else {
+            var ${lowerPrimaryKey} = arrIds[0];
+            var url = "${module}/${lowerTableName}Action!showDetail.action"#if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1) + "?${lowerTableName}.${lowerPrimaryKey}=" + ${lowerPrimaryKey}#else"&${lowerTableName}.${lowerPrimaryKey}=" + ${lowerPrimaryKey}#end#end#end;
+            util.showModelWin(url,800,600);
+        }
+	}
+	//打开修改页面
+	function ${lowerTableName}Update()
+	{
+        var selrow = listGrid.dtpaginggrid("option", 'selarrrow') + "";
+        if (selrow == "") {
+            $.dtmessagebox.warn("请选择一条数据进行操作!");
+            return;
+        }
+        var arrIds = new Array();
+        arrIds = selrow.split(",");
+        if (arrIds.length > 1) {
+            $.dtmessagebox.warn("只能选择一条数据!");
+        } else {
+            var ${lowerPrimaryKey} = arrIds[0];
+            var url = "<%=request.getContextPath()%>/${module}/${lowerTableName}Action!prepareUpdate.action"#if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1) + "?${lowerTableName}.${lowerPrimaryKey}=" + ${lowerPrimaryKey}#else"&${lowerTableName}.${lowerPrimaryKey}=" + ${lowerPrimaryKey}#end#end#end;
+            util.showModelWin(url,800,600);
+        }
+	}	
+	//删除
+	function ${lowerTableName}Delete() {
+	    var selrow = listGrid.dtpaginggrid("option", 'selarrrow') + "";
+        if (selrow == "") {
+            $.dtmessagebox.warn("请选择一条或多条数据进行操作!");
+            return;
+        }
+		$.dtmessagebox.confirm("确认删除吗？", "询问", function(msgBtn) {
+			if (msgBtn == $.dtdialog.DR_OK) {
+				var url = "${module}/${lowerTableName}Action!delete.action";
+				var parameter =#if(${hasPrimaryKey})#foreach(${primaryKey}in${primaryKeys})#set($lowerPrimaryKey = $generateCode.convertFirstLetterToLowerCase(${primaryKey}))#if($foreach.count==1)"${lowerTableName}.${lowerPrimaryKey}=" + selrow #else"&${lowerTableName}.${lowerPrimaryKey}=" + ${lowerPrimaryKey}#end#end#end;
+				$.post(url, parameter, function(result) {
+					if (result >= 1) {
+						$.dtmessagebox.success("操作成功,删除了"+result+"条数据", null, function() {
+							${lowerTableName}Query();
+						});
+					} else {
+						$.dtmessagebox.error("操作失败", null, function() {
+							${lowerTableName}Query();
+						});
+					}
+				});
+			}
+		});
+	}
+
+	//打开新增页面
+    function ${lowerTableName}Insert()
+    {
+        var url = "<%=request.getContextPath()%>/${module}/${lowerTableName}Action!prepareCreate.action";
+        util.showModelWin(url,800,600);
+    }
+</script>
+
+<div class="query-title"><span class="data-t-icon q-icon"></span><span>查询结果</span>
+    <p class="query-btn-line">
+        <a id="insert" href="javascript:void(0)" class="table-add oper-btn" onclick="${lowerTableName}Insert()"><span
+            <span class="table-add-icon"></span>新增</a>
+        <a id="detail" href="javascript:void(0)" class="table-detail oper-btn" onclick="${lowerTableName}Detail()"><span
+                class="table-save-icon"></span>详细信息</a>
+        <a id="update" href="javascript:void(0)" class="table-modify oper-btn" onclick="${lowerTableName}Update()"><span
+                class="table-modify-icon"></span>修改</a>
+        <a id="delete" href="javascript:void(0)" class="table-del oper-btn" onclick="${lowerTableName}Delete()"><span
+                class="table-del-icon"></span>删除</a>
+    </p>
+</div>
+
+<dt:grid id="listGrid" url="${module}/${lowerTableName}Action!retrieve.action?'+$('#parameters').serialize()+'" rowNum="10" jsonRoot="resultList" dataType="json" showPager="true" width="100%" height="260px" viewrecords="true" showHideButton="false" multiSelect="true" shrinkToFit="true" >
+#if(${convert}=="yes")
+	#foreach(${column}in${columns})
+	#set($lowerColumn = $generateCode.convertFirstLetterToLowerCase($column.getColumnName()))
+	<dt:gridColumn name="entity.${lowerColumn}" label="$column.getColumnName()"></dt:gridColumn>
+	#end
+#end
+#if(${convert}=="no")
+	#foreach(${column}in${columns})
+	#set($lowerColumn = $generateCode.convertFirstLetterToLowerCase($column.getColumnName()))
+	<dt:gridColumn name="${lowerColumn}" label="$column.getColumnName()"></dt:gridColumn>
+	#end
+#end
+#if(1!=1)
+	<dt:gridColumn name="" label="操作" formatter="handle"></dt:gridColumn>
+#end
+</dt:grid>

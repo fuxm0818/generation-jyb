@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib prefix="dt" uri="/dttag"%>
+<%@taglib prefix="s" uri="/struts-tags"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+%>
+<html>
+	<head>
+		<base href="<%=basePath%>">
+		<title>${lowerTableName}Create</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<dt:comppath></dt:comppath>
+		<script type="text/javascript" language="JavaScript" src="<%=request.getContextPath()%>/js/common.ref.js"></script>
+		<script type="text/javascript" language="JavaScript">
+			$(function(){
+				$('#confirmInsertBtn').click(${lowerTableName}Insert);
+				$("#cancleInsertBtn").click(cancleOpt);
+				$('#resetInsertBtn').click(function(){
+					document.forms['parameters'].reset();
+					//xxx.selectedByIndex(0);
+				});
+			});
+			//新增
+			function ${lowerTableName}Insert() {
+				if ($.dtvalidate('#parameters')) {
+					var url = "${module}/${lowerTableName}Action!create.action";
+					var parameters = $("#parameters").serialize();
+					$.post(url, parameters, function(result) {
+						if (result == 1) {
+							$.dtmessagebox.success("操作成功", null, function() {
+								window.close();
+								window.opener.${lowerTableName}Query();
+							});
+						} else {
+							$.dtmessagebox.error("操作失败", null, function() {
+								window.close();
+								window.opener.${lowerTableName}Query();
+							});
+						}
+					});
+				}
+			}
+			//关闭
+			function cancleOpt() {
+				window.close();
+				window.opener.${lowerTableName}Query();
+			}
+		</script>
+	</head>
+	<body>
+		<div class="all-center">
+            <div class="ui-widget-content func-panel condition-area">
+			<div class="ui-widget-header func-header">标题</div>
+			<s:form id="parameters">
+				<table class="condition" width="100%" align="center">
+#set($colNum = 0)
+#foreach(${column}in${columns})
+	#if(!$column.isIsprimaryKey())
+		#set($colNum = ${colNum} + 1)
+		#if(${colNum} % 3 == 1)
+						<tr>
+		#end
+		#set($lowerColumn = $generateCode.convertFirstLetterToLowerCase($column.getColumnName()))
+						<th><s:label value="$column.getColumnName()"></s:label></th>
+		#if($column.getTypeName() == "DATE")
+						<td><dt:dateInput id="${lowerColumn}" name="${lowerTableName}.${lowerColumn}" #if($column.getNullable() == 0) required="true"#end prompt="$column.getColumnName()" showTime="true"></dt:dateInput></td>
+		#else
+						<td><dt:input id="${lowerColumn}" name="${lowerTableName}.${lowerColumn}"#if($column.getNullable() == 0) required="true"#end prompt="$column.getColumnName()"></dt:input></td>
+		#end
+		#if(${colNum} % 3 == 0)
+						</tr>
+		#end
+	#end
+#end
+                    <tr>
+                     <td class="btn-area" colspan="6">
+                        <dt:button id="confirmInsertBtn" label="确定"></dt:button>
+                        <dt:button id="resetInsertBtn" label="重置"></dt:button>
+                        <dt:button id="cancleInsertBtn" label="取消"></dt:button>
+                        </td>
+                    </tr>
+				</table>
+			</s:form>
+		</div>
+		</div>
+	</body>
+</html>

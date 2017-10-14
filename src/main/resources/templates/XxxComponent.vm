@@ -1,0 +1,135 @@
+package ${rootPackage}${module}.component;
+
+import java.util.List;
+
+import com.cattsoft.baseplatform.core.entity.PagingInfo;
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+import ${rootPackage}${module}.persistence.${upperTableName}Mapper;
+
+/**
+ *
+ * Description: <br>
+ * Copyright:DATANG SOFTWARE CO.LTD<br>
+ *
+ * @author whoareyou
+ *
+ */
+public class ${upperTableName}Component {
+
+	private ${upperTableName}Mapper ${lowerTableName}Mapper;
+
+	public void set${upperTableName}Mapper(${upperTableName}Mapper ${lowerTableName}Mapper) {
+		this.${lowerTableName}Mapper = ${lowerTableName}Mapper;
+	}
+
+	/**
+	 * Description: 分页查询<br>
+	 *
+	 * @param pagingQueryBean
+	 * @return
+	 * @throws Exception
+	 */
+	public PagingResultBean<List<${upperTableName}>> retrieve(PagingQueryBean<${upperTableName}QB> pagingQueryBean) throws Exception {
+		PagingResultBean<List<${upperTableName}>> pagingResultBean = new PagingResultBean<List<${upperTableName}>>();
+		List<${upperTableName}> list = ${lowerTableName}Mapper.selectAll(pagingQueryBean);
+		pagingResultBean.setResultList(list);
+		PagingInfo pagingInfo = pagingQueryBean.getPagingInfo();
+		int count = ${lowerTableName}Mapper.selectAllCount(pagingQueryBean);
+		pagingInfo.setTotalRows(count);
+		pagingResultBean.setPagingInfo(pagingInfo);
+		return pagingResultBean;
+	}
+
+#if(${hasPrimaryKey})
+    /**
+	 * Description: 根据主键删除数据库的记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.deleteByPrimaryKey(#foreach(${primaryKey}in${primaryKeys})#if($foreach.count==1)${lowerTableName}.get${primaryKey}()#else, ${lowerTableName}.get${primaryKey}()#end#end);
+	}
+
+#end
+#if(1!=1)
+    /**
+	 * Description: 新写入数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.insert(${lowerTableName});
+	}
+
+#end
+    /**
+	 * Description: 动态字段,写入数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	public int insertSelective(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.insertSelective(${lowerTableName});
+	}
+
+#if(${hasPrimaryKey})
+    /**
+	 * Description: 根据指定主键获取一条数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	public ${upperTableName} selectByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.selectByPrimaryKey(#foreach(${primaryKey}in${primaryKeys})#if($foreach.count==1)${lowerTableName}.get${primaryKey}()#else, ${lowerTableName}.get${primaryKey}()#end#end);
+	}
+
+#end
+#if(${hasPrimaryKey})
+    /**
+	 * Description: 动态字段,根据主键来更新符合条件的数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateByPrimaryKeySelective(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.updateByPrimaryKeySelective(${lowerTableName});
+	}
+
+#end
+#if(1!=1)
+	/**
+	 * Description: 根据主键来更新符合条件的数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.updateByPrimaryKey(${lowerTableName});
+	}
+
+#end
+    /**
+	 * Description: 不分页查询<br>
+	 *
+	 * @param queryBean
+	 * @return
+	 * @throws Exception
+	 */
+    public List<${upperTableName}> selectList(${upperTableName}QB queryBean) throws Exception {
+        PagingQueryBean<${upperTableName}QB> pagingQueryBean = new PagingQueryBean<${upperTableName}QB>();
+        pagingQueryBean.setQueryBean(queryBean);
+		return ${lowerTableName}Mapper.selectAll(pagingQueryBean);
+	}
+
+}

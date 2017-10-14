@@ -1,0 +1,29 @@
+package ${rootPackage}${module}.entity.querybean;
+
+import com.cattsoft.baseplatform.core.entity.Entity;
+
+/**
+ *
+ * Description: <br>
+ * Copyright:DATANG SOFTWARE CO.LTD<br>
+ *
+ * @author whoareyou
+ *
+ */
+public class ${upperTableName}QB extends Entity {
+#foreach(${column}in${columns})
+	#set($lowerColumn = $generateCode.convertFirstLetterToLowerCase($column.getColumnName()))
+	private String ${lowerColumn};	
+#end
+#foreach(${column}in${columns})
+	#set($lowerColumn = $generateCode.convertFirstLetterToLowerCase($column.getColumnName()))
+	
+	public String get$column.getColumnName()() {
+		return $lowerColumn;
+	}
+
+	public void set$column.getColumnName()(String $lowerColumn) {
+		this.$lowerColumn = $lowerColumn;
+	}
+#end
+}

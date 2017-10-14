@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib prefix="dt" uri="/dttag"%>
+<%@taglib prefix="s" uri="/struts-tags"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+%>
+<html>
+	<head>
+		<base href="<%=basePath%>">
+		<title>${lowerTableName}Main</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<dt:comppath></dt:comppath>
+		<script type="text/javascript" language="JavaScript" src="<%=request.getContextPath()%>/js/core/dt.util.js"></script>
+		<script type="text/javascript" language="JavaScript" src="<%=request.getContextPath()%>/js/common.ref.js"></script>
+		<script type="text/javascript" language="JavaScript">
+			$(function(){
+				$('#queryBtn').click(${lowerTableName}Query);
+				$('#resetBtn').click(function(){
+					document.forms['parameters'].reset();
+					//xxx.selectedByIndex(-1);
+				});
+			});
+			//查询
+			function ${lowerTableName}Query()
+			{
+				var url = "${module}/${lowerTableName}Action!showList.action";
+				var parameters = $("#parameters").serialize();
+				$("#resultDiv").load(url,parameters);
+			}
+
+		</script>
+	</head>
+	<body>
+    <div class="all-center">
+        <div class="ui-widget-content func-panel condition-area">
+            <div class="query-title"><span class="query-t-icon q-icon"></span><span>查询条件</span></div>
+			<s:form id="parameters">
+				<table class="condition" width="100%" align="center">
+#foreach(${column}in${columns})
+	#if($foreach.count % 3 == 1)
+					<tr>
+	#end
+	#set($lowerColumn = $generateCode.convertFirstLetterToLowerCase($column.getColumnName()))
+					<th><s:label value="$column.getColumnName()"></s:label></th>
+	#if($column.getTypeName() == "DATE")				
+					<td><dt:dateInput id="${lowerColumn}" name="${lowerTableName}QB.${lowerColumn}" showTime="true" ></dt:dateInput></td>
+	#else
+					<td><dt:input id="${lowerColumn}" name="${lowerTableName}QB.${lowerColumn}"></dt:input></td>
+	#end
+	#if($foreach.count % 3 == 0)
+					</tr>
+	#end					
+#end
+                    </tr>
+                    <tr>
+                        <td class="btn-area" colspan="6">
+                            <dt:button id="queryBtn" label="查询"></dt:button>
+                            <dt:button id="resetBtn" label="重置"></dt:button>
+                        </td>
+                    </tr>
+				</table>
+			</s:form>
+			<br>
+			<!--查询结果-->
+			<div id="resultDiv"></div>
+		</div>
+		</div>
+	</body>
+</html>

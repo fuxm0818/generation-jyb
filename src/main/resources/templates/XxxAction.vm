@@ -1,0 +1,343 @@
+package ${rootPackage}${module}.web;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.cattsoft.baseplatform.core.entity.PagingInfo;
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+#if(${convert}=="yes")
+import com.cattsoft.baseplatform.func.sm.util.IdConverter;
+import com.cattsoft.baseplatform.func.sm.util.IdConvertionBean;
+import com.cattsoft.baseplatform.func.sm.util.IdDomainBean;
+#end
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+import ${rootPackage}${module}.service.${upperTableName}Service;
+import com.cattsoft.baseplatform.web.action.Action;
+
+/**
+ *
+ * Description: XXXX访问控制层<br>
+ * Copyright:DATANG SOFTWARE CO.LTD<br>
+ *
+ * @author whoareyou
+ *
+ */
+public class ${upperTableName}Action extends Action {
+	private static final long serialVersionUID = 1L;
+	private static final Log LOG = LogFactory.getLog(${upperTableName}Action.class);
+	private ${upperTableName}Service ${lowerTableName}Service;
+	private ${upperTableName} ${lowerTableName};
+	private ${upperTableName}QB ${lowerTableName}QB;
+	private PagingQueryBean<${upperTableName}QB> pqb;
+#if(${convert}=="no")
+	private PagingResultBean<List<${upperTableName}>> prb;
+#end
+#if(${convert}=="yes")
+	private PagingResultBean<List<${upperTableName}>> pagingResultBean;
+#end
+#if(${convert}=="yes")
+    private IdConverter<${upperTableName}> idConverter;
+	private PagingResultBean<List<IdConvertionBean<${upperTableName}>>> prb;
+#end
+	int result;
+	private List<${upperTableName}> resultList;
+	private JSONObject retMsg;
+
+
+    /**
+     * Description: 构造方法<br>
+     */
+	public ${upperTableName}Action() {
+		pqb = new PagingQueryBean<${upperTableName}QB>();
+		${lowerTableName}QB = new ${upperTableName}QB();
+		pqb.setQueryBean(${lowerTableName}QB);
+		PagingInfo pagingInfo = new PagingInfo();
+		pqb.setPagingInfo(pagingInfo);
+	}
+
+    /**
+	 * Description: 显示主页面<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String showMain() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示XXXX主页面");
+		}
+		return "main";
+	}
+
+    /**
+	 * Description: 显示列表页面<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String showList() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示XXXX列表页面");
+		}
+		return "list";
+	}
+
+#if(${convert}=="no")
+    /**
+	 * Description: 分页查询XXXX<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String retrieve() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("查询XXXX");
+		}
+		prb = ${lowerTableName}Service.retrieve(pqb);
+		return "retrieve";
+	}
+
+#end
+#if(${convert}=="yes")
+    /**
+	 * Description: 分页查询<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String retrieve() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("分页查询XXXX");
+		}
+		pagingResultBean = ${lowerTableName}Service.retrieve(pqb);
+		convert(pagingResultBean);
+		return "retrieve";
+	}
+
+	/**
+	 * Description: 值域转换方法<br>
+	 *
+	 * @param pagingResultBean
+	 */
+	private void convert(PagingResultBean<List<${upperTableName}>> pagingResultBean) {
+		// TODO
+		// IdDomainBean idDomainBean = new IdDomainBean();
+		// idDomainBean.setDomainCode("");
+		// idDomainBean.setIdCode("");
+		List<IdDomainBean> fieldList = new ArrayList<IdDomainBean>();
+		// fieldList.add(idDomainBean);
+		List<IdConvertionBean<${upperTableName}>> resultList = idConverter.convert(pagingResultBean.getResultList(), fieldList);
+		prb = new PagingResultBean<List<IdConvertionBean<${upperTableName}>>>();
+		prb.setResultList(resultList);
+		prb.setPagingInfo(pagingResultBean.getPagingInfo());
+	}
+
+#end
+    /**
+	 * Description: 显示增加页面<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String prepareCreate() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示XXXX增加页面");
+		}
+		return "create";
+	}
+
+    /**
+	 * Description: 增加<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String create() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("增加XXXX");
+		}
+		result = ${lowerTableName}Service.insertSelective(${lowerTableName});
+		return "result";
+	}
+
+    /**
+	 * Description: 显示修改页面<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String prepareUpdate() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示XXXX修改页面");
+		}
+		${lowerTableName} = ${lowerTableName}Service.selectByPrimaryKey(${lowerTableName});
+		return "update";
+	}
+
+    /**
+	 * Description: 修改<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String update() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("修改XXXX");
+		}
+		result = ${lowerTableName}Service.updateByPrimaryKeySelective(${lowerTableName});
+		return "result";
+	}
+
+    /**
+	 * Description: 删除<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String delete() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("删除XXXX");
+		}
+		if (${lowerTableName}.get${primaryKey}().indexOf(",") > 0) {
+            for (String id : ${lowerTableName}.get${upperPrimaryKey}().split(",")) {
+            result = 0;
+                ${upperTableName} temp = new ${upperTableName}();
+                temp.set${upperPrimaryKey}(id);
+                result += ${lowerTableName}Service.deleteByPrimaryKey(temp);
+            }
+        }
+        else {
+		    result = ${lowerTableName}Service.deleteByPrimaryKey(${lowerTableName});
+		}
+		return "result";
+	}
+
+    /**
+	 * Description: 显示明细页面<br>
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public String showDetail() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示XXXX明细页面");
+		}
+		${lowerTableName} = ${lowerTableName}Service.selectByPrimaryKey(${lowerTableName});
+		return "detail";
+	}
+
+    /**
+     * Description: 不分页查询<br>
+	 *
+     * @return
+     * @throws Exception
+     */
+    public String selectList() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("不分页查询XXXX");
+		}
+		// TODO Setting condition
+		resultList = ${lowerTableName}Service.selectList(${lowerTableName}QB);
+		return "resultList";
+	}
+
+
+
+
+//----------------getter/setter---------------
+
+#if(${convert}=="yes")
+	public PagingResultBean<List<${upperTableName}>> getPagingResultBean() {
+		return pagingResultBean;
+	}
+
+	public void setPagingResultBean(PagingResultBean<List<${upperTableName}>> pagingResultBean) {
+		this.pagingResultBean = pagingResultBean;
+	}
+
+	public IdConverter<${upperTableName}> getIdConverter() {
+		return idConverter;
+	}
+
+	public void setIdConverter(IdConverter<${upperTableName}> idConverter) {
+		this.idConverter = idConverter;
+	}
+
+
+	public PagingResultBean<List<IdConvertionBean<${upperTableName}>>> getPrb() {
+		return prb;
+	}
+
+	public void setPrb(PagingResultBean<List<IdConvertionBean<${upperTableName}>>> prb) {
+		this.prb = prb;
+	}
+
+#end
+	public int getResult() {
+		return result;
+	}
+
+	public void setResult(int result) {
+		this.result = result;
+	}
+
+    public void set${upperTableName}Service(${upperTableName}Service ${lowerTableName}Service) {
+		this.${lowerTableName}Service = ${lowerTableName}Service;
+	}
+
+	public ${upperTableName} get${upperTableName}() {
+		return ${lowerTableName};
+	}
+
+	public void set${upperTableName}(${upperTableName} ${lowerTableName}) {
+		this.${lowerTableName} = ${lowerTableName};
+	}
+
+
+	public ${upperTableName}QB get${upperTableName}QB() {
+		return ${lowerTableName}QB;
+	}
+
+	public void set${upperTableName}QB(${upperTableName}QB ${lowerTableName}QB) {
+		this.${lowerTableName}QB = ${lowerTableName}QB;
+	}
+
+
+	public PagingQueryBean<${upperTableName}QB> getPqb() {
+		return pqb;
+	}
+
+	public void setPqb(PagingQueryBean<${upperTableName}QB> pqb) {
+		this.pqb = pqb;
+	}
+
+#if(${convert}=="no")
+	public PagingResultBean<List<${upperTableName}>> getPrb() {
+		return prb;
+	}
+
+	public void setPrb(PagingResultBean<List<${upperTableName}>> prb) {
+		this.prb = prb;
+	}
+
+#end
+    public List<${upperTableName}> getResultList() {
+		return resultList;
+	}
+
+	public void setResultList(List<${upperTableName}> resultList) {
+		this.resultList = resultList;
+	}
+
+	public JSONObject getRetMsg() {
+    		return retMsg;
+    }
+
+    public void setRetMsg(JSONObject retMsg) {
+        this.retMsg = retMsg;
+    }
+}

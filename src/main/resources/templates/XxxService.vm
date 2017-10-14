@@ -1,0 +1,101 @@
+package ${rootPackage}${module}.service;
+
+import java.util.List;
+
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+
+/**
+ *
+ * Description: <br>
+ * Copyright:DATANG SOFTWARE CO.LTD<br>
+ *
+ * @author whoareyou
+ *
+ */
+public interface ${upperTableName}Service {
+
+	/**
+	 * Description: 分页查询<br>
+	 *
+	 * @param pagingQueryBean
+	 * @return
+	 * @throws Exception
+	 */
+	PagingResultBean<List<${upperTableName}>> retrieve(PagingQueryBean<${upperTableName}QB> pagingQueryBean) throws Exception ;
+
+#if(${hasPrimaryKey})
+    /**
+	 * Description: 根据主键删除数据库的记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	int deleteByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#end
+#if(1!=1)
+    /**
+	 * Description: 新写入数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	int insert(${upperTableName} ${lowerTableName}) throws Exception ;
+#end
+
+    /**
+	 * Description: 动态字段,写入数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	int insertSelective(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#if(${hasPrimaryKey})
+    /**
+	 * Description: 根据指定主键获取一条数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	${upperTableName} selectByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#end
+#if(${hasPrimaryKey})
+    /**
+	 * Description: 动态字段,根据主键来更新符合条件的数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	int updateByPrimaryKeySelective(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#end
+#if(1!=1)
+	/**
+	 * Description: 根据主键来更新符合条件的数据库记录<br>
+	 *
+	 * @param ${lowerTableName}
+	 * @return
+	 * @throws Exception
+	 */
+	int updateByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#end
+    /**
+	 * Description: 不分页查询<br>
+	 *
+	 * @param queryBean
+	 * @return
+	 * @throws Exception
+	 */
+    List<${upperTableName}> selectList(${upperTableName}QB queryBean) throws Exception ;
+}
